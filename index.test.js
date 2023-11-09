@@ -1,9 +1,10 @@
 const request = require("supertest");
 const app = require("./src/app");
 const { syncSeed } = require("./seed");
+const User = require("./models/User");
 
-beforeAll(() => {
-  syncSeed();
+beforeAll(async () => {
+  await syncSeed();
 });
 
 describe("Users api", () => {
