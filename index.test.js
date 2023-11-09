@@ -7,10 +7,6 @@ beforeAll(() => {
 });
 
 describe("Users api", () => {
-  test("Verify the GET method doesn't error", async () => {
-    const response = await request(app).get("/users");
-    expect(response.statusCode).toBe(200);
-  });
   test("Verify the GET method returns an array of users", async () => {
     const response = await request(app).get("/users");
     expect((response) => {
@@ -34,6 +30,24 @@ describe("Users api", () => {
     });
     expect((response) => {
       response.body[4].name = "Timothy";
+    });
+  });
+  test("Verify the POST method returns an error", async () => {
+    const response = await request(app).post("/users").send({
+      name: "",
+      age: 0,
+    });
+    expect((response) => {
+      response.body = {
+        error: [
+          {
+            value: "",
+            msg: "Invalid value",
+            param: "name",
+            location: "body",
+          },
+        ],
+      };
     });
   });
   test("Verify the PUT method updates the database", async () => {

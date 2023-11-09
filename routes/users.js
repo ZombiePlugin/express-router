@@ -1,6 +1,7 @@
 const express = require("express");
 const userRouter = express.Router();
 const User = require("../models/User");
+const { check, validationResult } = require("express-validator");
 
 userRouter.use(express.json());
 userRouter.use(express.urlencoded());
@@ -15,10 +16,19 @@ userRouter.get("/:id", async (req, res) => {
   res.json(foundUser);
 });
 
-userRouter.post("/", async (req, res) => {
-  const newUser = await User.create(req.body);
-  res.json(newUser);
-});
+userRouter.post(
+  "/",
+  [check("name").not().isEmpty().trim()],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.json({ error: errors.array() });
+    } else {
+      const newUser = await User.create(req.body);
+      res.json(newUser);
+    }
+  }
+);
 
 userRouter.put("/:id", async (req, res) => {
   const updatedUser = await User.update(req.body, {
